@@ -1,9 +1,7 @@
 Requiem AI is intended to be a source of public information.
 Requiem AI is powered by Google's Gemini API
 
-You must add your own Google Gemini activation key in order
-for the AI to work. you can get this key from
+You must add your own Google Gemini activation key to use the AI. you can get this key from
 Gemini's API page
 
-Requiem is made in Python. I used visual studio to
-to make the code which allows Requiem to function.
+Requiem is made in Python. I used visual studio.
