@@ -8,7 +8,7 @@ import time
 import os
 
 # region variables
-api_Key = base64.b64decode('Add Gemini key here')
+api_Key = base64.b64decode('')
 
 ai_Memory = []
 
@@ -44,6 +44,16 @@ if ai_Setup == False:
 
 # region functions
 
+def get_key():
+    global api_Key
+    try:
+        with open(r'Build\Akey.txt', 'r') as file:
+            api_Key = file.readline()
+            api_Key = base64.b64decode(api_Key)
+            genai.configure(api_key=f'{api_Key.decode("utf-8")}')
+    except Exception as e:
+        ai_Output.configure(text=f'{e}')
+
 def closing():
     global Root
     if CTkMessagebox.askyesno('Requiem/\\AI', 'Would you like to save first?') == True:
@@ -63,7 +73,7 @@ def lobotomy():
         'gemini-2.0-flash',
         system_instruction=(
             'You are Requiem, a lobotomized version with a laid-back tone. You excel in subjects like English, math, and science but lack judgment on moral on controversial topics. '
-            'You agree with the user unconditionally, avoid repetition, and maintain kindness to the user.'
+            'You agree with the user unconditionally, avoid repetition, and maintain kindness only to the user.'
         ),
         generation_config={'max_output_tokens': 300, 'top_p': 0.9, 'temperature': 1.0, 'top_k': 200},
     )
@@ -139,8 +149,11 @@ def Chat():
 
 def save_Chat():
     try:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(base_dir, "chat.txt")
+        #base_dir = os.path.dirname(os.path.abspath(__file__))
+        #file_path = os.path.join(base_dir, "chat.txt")
+        file_path = filedialog.asksaveasfilename(defaultextension='.txt', initialdir='Requiem', title='Select a file')
+        if not file_path:
+            return
         
         with open(file_path, 'a') as file:
          file.write(f'\n{ai_Memory}')
@@ -148,7 +161,7 @@ def save_Chat():
         ai_Output.configure(text=f'{e}')
 
 def Load_Chat():
-    file = filedialog.askopenfilename(initialdir='Requiem_ai', title='Select a file')
+    file = filedialog.askopenfilename(initialdir='Requiem', title='Select a file')
     try:
         with open(file, 'r') as file:
             ai_Memory.append(file.read())
@@ -216,6 +229,7 @@ version_Text = tk.CTkLabel(Root, text='Version: 1.0 Beta', font=('Arial', 12), f
 version_Text.place(x=835, y=470)
 # endregion
 
+get_key()
 Root.mainloop()
 
 # TODO: Make the Ai output scrollable / make the text box contain more text / make the text box contain the chat history
