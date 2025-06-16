@@ -52,12 +52,24 @@ if ai_Setup == False:
 def get_key():
     global api_Key
     try:
-        with open(r'Requiem_ai\Akey.txt', 'r') as file:
+        with open(r'Requiemm_ai\Akey.txt', 'r') as file:
             api_Key = file.readline()
             api_Key = base64.b64decode(api_Key)
             genai.configure(api_key=f'{api_Key.decode("utf-8")}')
     except Exception as e:
         ai_Output.configure(text=f'{e}')
+        file = filedialog.askopenfilename(initialdir='Requiem_ai', title='Select your API Key file')
+        if file:
+            try:
+                with open(file, 'r') as f:
+                    api_Key = f.readline()
+                    api_Key = base64.b64decode(api_Key)
+                    genai.configure(api_key=f'{api_Key.decode("utf-8")}')
+                    ai_Output.configure(text='API key loaded successfully.')
+            except Exception as e:
+                ai_Output.configure(text=f'Error reading API key file: {e}')
+        else:
+            ai_Output.configure(text='No API key file selected.')
 
 def closing():
     global Root
