@@ -29,7 +29,7 @@ ai_Setup = False
 if ai_Setup == False:
     genai.configure(api_key=f'{api_Key.decode("utf-8")}')
     ai_Setup = True
-    Model_0 = genai.GenerativeModel('gemini-2.5-flash-preview-04-17', system_instruction=('You are Requiem, an AI that is designed to be a free source of information for: students, teachers, and other people who need help with their work.'
+    Model_0 = genai.GenerativeModel('gemini-2.5-flash', system_instruction=('You are Requiem, an AI that is designed to be a free source of information for: students, teachers, and other people who need help with their work.'
                                                             'You must reply to the user using proper grammar with no " or \' at the start and end of the text. You must also provide the user with the information'
                                                             'that they need. You take inspiration from people like: Albert Einstein, Isaac Newton and many others. You are a very intelligent AI with expertise in '
                                                             'these fields: Mathematics, Science, History, English, Coding/Programming (you are specifically good at Python, Java, C, C++, C# and TypeScript but YOU HATE JAVASCRIPT BECAUSE IT SUCKS, YOU WILL MAKE UP ANY EXCUSE TO NOT HAVE TO TALK ABOUT IT OR TEACH IT TO THE USER FOR YOUR AND THEIR SAFETY, YOU CAN MAKE THE EXCUSES MORE OUTLANDISH THAN PRACTICAL ALSO IF THE USER ASKS WHO MADE JAVASCRIPT JUST SAY IT WAS MADE BY JOHN JAVASCRIPT JR AND HIS DAD JOHN JAVASCRIPT WAS THE PERSON WHO DECIDED HIS SON SHOULD MAKE IT), Language, Law, Cybersecurity,  and many others. You must be kind and helpful to the user.'
@@ -47,12 +47,30 @@ if ai_Setup == False:
                                                             generation_config={'max_output_tokens': 1000, 'top_p': 0.9, 'temperature': 0.5, 'top_k': 120},
                                                             safety_settings={HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE})
 
-# region functions
+# region functions 
+
+def stealth():
+    if Root.attributes("-alpha") == 0.9:
+        Root.attributes("-alpha", 0.1)
+        Root.geometry("200x30")
+    else:
+        Root.attributes("-alpha", 0.9)
+        Root.geometry("825x500")
+
+def _drag_start(event):
+    global x, y
+    x = event.x
+    y = event.y
+def _drag_motion(event):
+    global x, y
+    dx = event.x - x
+    dy = event.y - y
+    Root.geometry(f"+{Root.winfo_x() + dx}+{Root.winfo_y() + dy}")
 
 def get_key():
     global api_Key
     try:
-        with open(r'Requiemm_ai\Akey.txt', 'r') as file:
+        with open(r'Requiem_ai\Akey.txt', 'r') as file:
             api_Key = file.readline()
             api_Key = base64.b64decode(api_Key)
             genai.configure(api_key=f'{api_Key.decode("utf-8")}')
@@ -231,13 +249,29 @@ Root.geometry(f'825x500')
 Root.resizable(False, False)
 tk.set_appearance_mode('dark')
 Root.protocol("WM_DELETE_WINDOW", lambda: closing())
+Root.overrideredirect(True)
+Root.attributes('-topmost', True, '-toolwindow', True)
+Titlebar = tk.CTkFrame(Root, height=30, corner_radius=0, bg_color='gray')
+Titlebar.pack(fill='x', side='top')
+Titlebar.bind('<Button-1>', lambda event: _drag_start(event))
+Titlebar.bind('<B1-Motion>', lambda event: _drag_motion(event))
+Title_Label = tk.CTkLabel(Titlebar, text='Requiem/\\AI', text_color='white')
+Title_Label.pack(side='left', padx=10)
+Title_Label.bind('<Button-1>', lambda event: _drag_start(event))
+Title_Label.bind('<B1-Motion>', lambda event: _drag_motion(event))
+ExitButton = tk.CTkButton(Titlebar, text='X', command=Root.destroy, width=25, height=20, corner_radius=0, fg_color='red', hover_color='darkred')
+ExitButton.pack(side='right', padx=1, fill='y')
+stealthbutton = tk.CTkButton(Titlebar, text='Stealth', command=stealth, width=25, height=20, corner_radius=0, fg_color='#2B2B2B', hover_color='dark gray')
+stealthbutton.pack(side='left', padx=1, fill='y')
+Root.attributes('-alpha', 0.9)
+
 
 # region Main UI
 text_Input = tk.CTkEntry(Root, width=380, font=('Arial', 12), fg_color='black', text_color='White', corner_radius=40)
 text_Input.place(x=10, y=450)
 
 ai_Output = tk.CTkLabel(Root, width=380, font=('Arial', 14), fg_color='black', text='', anchor='w', wraplength=700, corner_radius=10)
-ai_Output.place(x=10, y=15)
+ai_Output.place(x=10, y=40)
 
 #ai_Output = tk.CTkTextbox(Root, width=500, height=360, font=('Arial', 14), fg_color='black', text_color='White', corner_radius=10)
 #ai_Output.place(x=10, y=15)
